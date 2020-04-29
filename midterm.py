@@ -25,33 +25,43 @@ def word_cloud(tweets):
     plt.imshow(wordcloud)
     plt.axis("off")
     plt.tight_layout(pad = 0)
-    plt.show()
+    return plt
 
 
 
 def sentiment(tweets):
     sid = SentimentIntensityAnalyzer()
+    results = ''
+    sent_list = []
     for tweet in tweets:
         scores = sid.polarity_scores(tweet)
     
         for key in sorted(scores):
-            print('{0}: {1} '.format(key, scores[key]), end='')
+            sent_list.append('{0}: {1} '.format(key, scores[key]))
     
         if scores["compound"] >= 0.05:
-            print("\npositive\n")
+            sent_list.append('Positive')
     
         elif scores["compound"] <= -0.05:
-            print("\nnegative\n")
+            sent_list.append('Negative')
         else:
-            print("\nneutral\n")
+            sent_list.append('Neutral')
+    results = '<br/>'.join(sent_list)
+    return results
             
             
             
 def poscount(tweets):
+    results = ''
+    count_list = []
     for tweet in tweets:
         lower_case = tweet.lower()
+        count_list.append(lower_case)
         tokens = nltk.word_tokenize(lower_case)
         tags = nltk.pos_tag(tokens)
-        counts = Counter( tag for word,  tag in tags)
-        print(counts)
+        counts = dict(Counter( tag for word,  tag in tags))
+        for key in list(counts.keys()):
+            count_list.append(str(key)+': '+str(counts[key]))
+    results = '<br/>'.join(count_list)
+    return results
         
